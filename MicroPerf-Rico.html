@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simu Microperf by Rico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .input-group input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #validationMessage {
+            margin-top: 30px;
+            color: #28a745; /* Couleur verte pour le succès */
+            font-weight: bold;
+            display: none; /* Caché par défaut */
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        #validationMessage.show {
+            display: flex; /* Affiche quand la classe 'show' est ajoutée */
+        }
+        #validationMessage svg {
+            width: 30px;
+            height: 30px;
+            fill: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simu Microperf by Rico</h1>
+        <div class="input-group">
+            <label for="width">Largeur (mm) :</label>
+            <input type="number" id="width" value="3000" min="1">
+        </div>
+        <div class="input-group">
+            <label for="height">Hauteur (mm) :</label>
+            <input type="number" id="height" value="2500" min="1">
+        </div>
+        <button id="downloadBtn">Télécharger le SVG</button>
+
+        <div id="validationMessage">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <span>Fichier SVG téléchargé avec succès !</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const validationMessage = document.getElementById('validationMessage');
+
+            const generateSVG = (width, height) => {
+                // NOUVELLES DIMENSIONS
+                const spacing = 3; // mm, espacement entre les centres des cercles
+                const circleDiameter = 1.5; // mm
+                const circleRadius = circleDiameter / 2; // mm
+
+                // Calcul des dimensions du pattern pour un quinconce parfait
+                // Largeur du pattern = 2 * espacement
+                const patternWidth = spacing * 2; // 6 mm
+                // Hauteur du pattern = espacement * sqrt(3) / 2 (hauteur d'un triangle équilatéral) * 2 pour deux rangées
+                const patternHeight = spacing * Math.sqrt(3) / 2 * 2; // env. 5.196 mm
+
+                return `<svg width="${width}mm" height="${height}mm" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="patt1" x="0" y="0" width="${patternWidth}mm" height="${patternHeight}mm" patternUnits="userSpaceOnUse">
+      <circle cx="${spacing / 2}mm" cy="${spacing * Math.sqrt(3) / 4}mm" r="${circleRadius}mm" fill="white"/>
+
+      <circle cx="${spacing + spacing / 2}mm" cy="${spacing * Math.sqrt(3) / 4 + spacing * Math.sqrt(3) / 2}mm" r="${circleRadius}mm" fill="white"/>
+      
+      <circle cx="${-spacing / 2}mm" cy="${spacing * Math.sqrt(3) / 4 + spacing * Math.sqrt(3) / 2}mm" r="${circleRadius}mm" fill="white"/>
+      <circle cx="${patternWidth + spacing / 2}mm" cy="${spacing * Math.sqrt(3) / 4 + spacing * Math.sqrt(3) / 2}mm" r="${circleRadius}mm" fill="white"/>
+    </pattern>
+  </defs>
+  <rect width="${width}mm" height="${height}mm" fill="url(#patt1)"/>
+</svg>`;
+            };
+
+            const downloadSVG = () => {
+                const width = parseFloat(widthInput.value);
+                const height = parseFloat(heightInput.value);
+
+                // Masquer le message de validation précédent s'il était visible
+                validationMessage.classList.remove('show');
+
+                if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+                    alert("Veuillez entrer des dimensions valides pour télécharger.");
+                    return;
+                }
+
+                const svgCode = generateSVG(width, height);
+                const blob = new Blob([svgCode], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `motif_quinconce_${width}x${height}.svg`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url); // Libère l'URL de l'objet
+
+                // Afficher le message de validation après le téléchargement
+                validationMessage.classList.add('show');
+
+                // Masquer le message après quelques secondes (facultatif)
+                setTimeout(() => {
+                    validationMessage.classList.remove('show');
+                }, 3000); // Disparaît après 3 secondes
+            };
+
+            // Écouteur d'événement pour le bouton de téléchargement
+            downloadBtn.addEventListener('click', downloadSVG);
+        });
+    </script>
+</body>
+</html>

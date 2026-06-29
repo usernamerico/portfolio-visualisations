@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pieuvre 3D Holographique Responsive</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #010105;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            cursor: move;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none; /* Empêche le scroll parasite sur mobile */
+        }
+        canvas {
+            display: block;
+            /* Le carré s'adapte automatiquement à la plus petite dimension de l'écran */
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 750px;
+            max-height: 750px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="renderCanvas"></canvas>
+
+    <svg id="octopusSource" viewBox="0 0 766 760" style="display: none;">
+        <path d="M440.4,578.7c11.2-6,24.5-2.7,33.3,4.8,4.7,4,6.6,9,7.6,15l5.5.2c0-8-2.3-15.7-8.4-21.8-11.9-11.9-31-16.1-46.4-8.2-17,8.7-26.9,26.4-27.8,45.4-.3,7.3,0,15.5,2.2,22.4,14.5,45.9,56.2,100.3,108.1,93.4,19.3-2.6,36.6-11.8,49.5-26.3,20.5-23.1,19.5-56.8,10.2-85.7-7.5-23.4-19.6-44.2-35.2-63.2-12.1-14.8-25-28-39.2-40.7l-41.8-37.3c-15.6-15.3-28.1-32.4-37.6-53.6,32.5,12.9,66,19,101,17.8,37.4-1.3,71.2-8.6,107.9-7.8,16.6.3,31.2,6.2,43.7,16.8,15.6,13.2,23.5,31.7,21.5,52.3-1.3,13.6-4.6,26.4-10.2,38.9-15,33.8-58.8,41.1-90,24.6-7-3.7-13.5-8.8-17.6-15.5-8.8-14.3-10.3-32-5.4-47.7,1.8-5.7,5.1-9.9,10.6-12.2,8.2-3.4,18-3.2,25.5,1.9s8.8,11.2,10.6,18.5l5.5-.7c-1-9.4-3.4-17.6-9.9-24.1-7.9-7.9-19.1-9.7-30-8.6-21.5,2.2-29.3,20.3-32.4,40.7-4.1,27.3,7.2,53.1,30.1,68.7,19.2,13.1,41.9,18,65.2,16.2,24.8-1.9,46.5-13.5,62-32.8,10.2-12.7,16.2-26.7,21.5-42,13.3-38.6,5.3-80.6-22.9-110.3-21.2-22.2-49.3-34.8-80.3-35-13.3,0-25.7,1.1-38.8,2.5l-52.8,5.9c-15,1.7-29.6,1.7-44.2.1,27.2-8.2,47.9-20.6,60.1-46.1s12-27.6,17.4-42l17.7-46.7c6.1-16.2,20.6-42.5,36.9-46.8,30-7.9,65.1,4.4,77.5,34.2,13,31.2,6.9,75.8-26.5,84.9s-24.3,5.1-36.7,3.7c-15.2-1.8-29.1-11.2-33.4-26.1-5.2-18.3,5.6-46.9,26.2-47.1l.5-5.3c-21.3-2.8-36.4,24.8-36.6,44.2s16.4,40.5,37.8,45.5c12.4,2.9,24.1,2.3,36.7,1.2,22.1-2,39.9-14.5,49.5-34.5,7.3-15.2,9-31.4,8.1-48.3-2.3-44.6-37.4-79.4-82-81.9-13.1-.7-25.6-1.2-37.9,4-22.9,9.8-38.2,32.7-49.7,54.7-15.3,29.3-25.2,58-41.8,87.8s-34.5,20.6-55.5,19.8c16.1-20.9,31.7-48.3,29.4-73.5-1.3-14.8-4.5-29-9.3-43l-14.7-42.8c-6.3-18.5-12.5-36.3-16.7-55.4-4.6-21.1,1.9-37.9,15.5-54.2,17.9-21.4,46-29.8,72.7-21.4s24.3,10.5,34.2,19.2c15.2,13.4,18.8,33.5,9.6,51.3-7.2,14-20.5,21.2-36.2,19.9-13.4-1.1-23-10-23.9-23.8-.3-4.6.6-9.9,3.7-13s8-4.7,13.8-4.5l1.2-5.2c-11.9-2.5-22.8,3.5-25.6,15.4-3.1,13.5,1.7,29.2,14.3,36.4,16.1,9.3,37.6,7.7,52.5-3.8,19.5-15.1,25.9-42.2,17.1-64.8-4.2-10.7-11.1-19-19.4-26.6-12.4-11.3-27.1-18.3-43.2-23.1-19.2-5.7-38.7-5-57.5,2.9-29.1,12.4-52,37.7-59.4,68.8-6.4,26.6,9.1,73.6,18.1,102.2,6,19.2,11.4,37.7,14.7,57.5,1.3,7.9,1.2,15.4-1.8,22.8s-10.2,19.1-17.8,27.5c1.7-13.3,2.8-25,1.2-37.8-3.7-29.6-22-54.7-48.9-67.7-28.8,14.1-47.1,41.6-49.4,73.2s.5,20.7,1.6,32.2c-13.5-16.4-23-30.1-19.4-50.8,3.4-19.2,8.5-37.2,14.3-55.9,9.1-28.9,24.8-76.6,18.3-103.4-11.2-46.2-58.9-82.7-106-74s-63.7,24.5-74.3,54.5c-9.9,28,4.9,64.4,36.6,70.9,12.6,2.6,26.1,1.5,36.7-6.6s15.5-25.1,10.2-38.4c-3.9-9.7-13.7-13.3-23.9-11.7l.6,5.4c5.8,0,10.7,1,14,4.5,3.4,3.5,4.1,9.1,3.8,13.8-1.1,13.7-11,22.2-24.2,23.2s-28.5-5.9-35.7-19.6c-9.2-17.5-6.3-37.5,8.7-51s22.6-16.2,36.1-20.2c38.6-11.3,75.8,12.5,86.9,49.8,2.7,9.2,1.8,18.7-.3,28-9.9,43.8-28.8,80-38.5,125.4-7.2,33.9,7.1,60.5,27.8,87.7-24.2.2-45.7-.7-57.6-23.2-6.9-13.1-13-25.8-18.9-39.5s-15.2-34.7-24.5-51.6c-11.2-20.5-26.5-40.7-48.4-49-11.8-4.4-23.6-3.9-35.9-3.1-45.3,2.7-80.3,38.5-81.8,83.9-.5,16.7,1.3,32.6,8.8,47.4,9.8,19.4,27.2,31.3,48.7,33.4s24.9,1.9,37.5-1.2c21.1-5.2,37.4-23.1,37.2-45.4-.2-19.4-14.9-46.6-36.2-44.2-.1,1.1,0,3.9.3,5.3,20.8.4,31.6,29.8,25.7,48.1-4.7,14.5-18.4,23.6-33.3,25.1-13.2,1.4-26.2-.5-38.7-4.5-30.5-9.8-35.9-50.8-25.6-80.4s46.9-45.9,78-38.1c8.7,2.1,15.5,8.3,20.6,15.4,7.9,11.1,14.2,22.8,19,35.6l16.5,44c6.5,17.3,12.7,34.1,22.2,50,7.8,13,20.1,22.2,33.5,28.8s14.1,5.5,21.2,8.2c-15.3,1.5-29.5,1.4-44.4-.2l-53.5-6c-37.3-4.2-66.3-5-98.4,16.1-42.3,27.9-59.2,79.6-42.3,127.3,5.7,16.2,12.2,31.3,23.8,44.4,14.6,16.5,33.4,26.9,55.5,29.4,21.8,2.4,43.3-.9,62.4-11.6s29.2-23.2,34.6-41.5c6.9-23.3,1.2-59.5-18.2-68.7-10.9-5.1-24.1-5.2-34.8,0-11.1,5.5-16.1,16.9-16.9,29.2l5.4.5c1.8-6.6,3.6-12.6,8.8-16.9,9.2-7.6,23.9-7.7,32.9.5s5.2,8.7,6.2,13.3c3.2,15,1.1,30.7-7.2,43.6s-12.1,12.4-20,16.1c-16.6,7.9-35.4,9.1-52.9,3.8-17.7-5.3-30.6-18.3-36.7-35.6-9-25.6-13.5-53.3,4.2-75.3,9.6-11.9,22.4-21,37.4-24.8,20.5-5.1,54.8-.7,78,1.9,54,6,93.4,6.8,146.6-13.9-9.8,22.8-24,41.5-41.5,57.3l-31.1,27.6c-34.9,30.9-66.1,64.4-80.8,109.3-12,36.4-9.5,75.1,23.2,98.1,18.1,12.8,40.6,18.6,62.4,12.8,17.2-4.6,31.6-14.5,44-27.2,15.8-16.2,26.7-35.5,35.3-56.3s4.9-59.6-20.6-74.9c-14.8-8.9-34.2-5.9-46.8,5.3-7,6.2-10.5,14-10,23.5l5.3-.2c.9-5.7,2.4-10,6.4-13.9,9.1-8.9,24.3-12.2,35.7-5.2,10.3,6.3,16.9,18.6,17,30.7s-.7,13.8-3,19.7c-10,24.7-29.2,47.9-52,62-18.1,11.2-41.7,8.2-55.8-7.9-7-8-9.9-18.4-8.2-28.9,2.6-16,8.7-30.4,17.6-43.9,9.3-14,20-26.3,32.4-37.9l59-55.1c21.5-20.1,37.4-43.6,49.3-71.6,12.2,30.5,31.3,55.2,54.9,77.2l59,55c21,21.9,40.8,47.8,44.3,78.4s-3.3,22.6-11.9,30.3c-16.2,14.3-38.6,14.4-56.3,1.9-21.4-15.1-38.4-35.9-48.3-60.5-2.2-5.6-2.7-12.6-2.7-18.7,0-12.5,6.9-25.3,18.3-31.4Z"/>
+    </svg>
+
+    <script>
+        const canvas = document.getElementById('renderCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Variable globale de dimension dynamique
+        let currentSize = 750;
+
+        // Fonction d'ajustement Responsive de la résolution du Canvas
+        function resizeCanvas() {
+            // Prend la taille calculée réelle par le CSS (width/height en vmin)
+            const rect = canvas.getBoundingClientRect();
+            
+            // On fixe la résolution interne (multipliée par devicePixelRatio pour éviter le flou Retina/OLED)
+            const dpr = window.devicePixelRatio || 1;
+            currentSize = Math.floor(rect.width * dpr);
+            
+            canvas.width = currentSize;
+            canvas.height = currentSize;
+        }
+        
+        // Initialisation et écouteur d'événement au redimensionnement d'écran
+        window.addEventListener('resize', resizeCanvas);
+
+        const vertices = [];
+        const edges = [];
+
+        // Génération géométrique initiale
+        const svgPath = document.querySelector('#octopusSource path');
+        const pathLength = svgPath.getTotalLength();
+        const totalSections = 260; 
+        const meshDepth = 0.05;
+
+        const backbone = [];
+        for (let i = 0; i <= totalSections; i++) {
+            backbone.push(svgPath.getPointAtLength((i / totalSections) * pathLength));
+        }
+
+        for (let i = 0; i <= totalSections; i++) {
+            const current = backbone[i];
+            const next = backbone[i + 1] || current;
+            const prev = backbone[i - 1] || current;
+
+            let dx = next.x - prev.x;
+            let dy = next.y - prev.y;
+            let len = Math.sqrt(dx*dx + dy*dy) || 1;
+            let nx = -dy / len;
+            let ny = dx / len;
+
+            let cx = (current.x - 383) / 383;
+            let cy = -(current.y - 380) / 380;
+
+            const baseIdx = vertices.length;
+            const thickness = 0.015;
+
+            vertices.push({ x: cx + nx * thickness, y: cy + ny * thickness, z: meshDepth });
+            vertices.push({ x: cx - nx * thickness, y: cy - ny * thickness, z: meshDepth });
+            vertices.push({ x: cx + nx * thickness, y: cy + ny * thickness, z: -meshDepth });
+            vertices.push({ x: cx - nx * thickness, y: cy - ny * thickness, z: -meshDepth });
+
+            edges.push([baseIdx, baseIdx + 1]);
+            edges.push([baseIdx + 2, baseIdx + 3]);
+            edges.push([baseIdx, baseIdx + 2]);
+            edges.push([baseIdx + 1, baseIdx + 3]);
+
+            if (i > 0) {
+                const prevIdx = baseIdx - 4;
+                edges.push([prevIdx, baseIdx]);
+                edges.push([prevIdx + 1, baseIdx + 1]);
+                edges.push([prevIdx + 2, baseIdx + 2]);
+                edges.push([prevIdx + 3, baseIdx + 3]);
+            }
+        }
+
+        // --- ENGIN MATHÉMATIQUE MATRICIEL ---
+        function rotateY(pt, angle) {
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            return { x: pt.x * cos - pt.z * sin, y: pt.y, z: pt.x * sin + pt.z * cos };
+        }
+
+        function rotateX(pt, angle) {
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            return { x: pt.x, y: pt.y * cos - pt.z * sin, z: pt.y * sin + pt.z * cos };
+        }
+
+        function project(pt) {
+            const cameraZ = 2.3;
+            const zFinal = pt.z + cameraZ;
+            return {
+                x: pt.x / zFinal,
+                y: pt.y / zFinal,
+                zCalculated: pt.z
+            };
+        }
+
+        // Conversion écran indexée sur l'échelle dynamique de la fenêtre
+        function toScreen(pt2d) {
+            const scale = currentSize * 0.95;
+            return {
+                x: (pt2d.x * scale) + (currentSize / 2),
+                y: (-pt2d.y * scale) + (currentSize / 2)
+            };
+        }
+
+        // --- GESTION INTERACTIVE DE L'INERTIE (SOURIS ET TACTILE) ---
+        let currentRotX = 0.35, currentRotY = 0.45;
+        let velocityX = 0, velocityY = 0;
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+        let runTime = 0;
+
+        window.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouse = { x: e.clientX, y: e.clientY };
+            velocityX = 0; velocityY = 0;
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                let diffY = (e.clientX - lastMouse.x) * 0.006;
+                let diffX = (e.clientY - lastMouse.y) * 0.006;
+                currentRotY += diffY;
+                currentRotX += diffX;
+                velocityY = diffY;
+                velocityX = diffX;
+                lastMouse = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        // Mobile / Tablettes Tactiles
+        window.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            velocityX = 0; velocityY = 0;
+        });
+        window.addEventListener('touchend', () => isDragging = false);
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                let diffY = (e.touches[0].clientX - lastMouse.x) * 0.006;
+                let diffX = (e.touches[0].clientY - lastMouse.y) * 0.006;
+                currentRotY += diffY;
+                currentRotX += diffX;
+                velocityY = diffY;
+                velocityX = diffX;
+                lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        // Nuancier dynamique calculé sur l'axe Z profond
+        function getZColorString(z) {
+            let factor = (z + 0.25) / 0.5;
+            factor = Math.max(0, Math.min(1, factor));
+            let r = Math.floor(4 * factor + 4 * (1 - factor));
+            let g = Math.floor(246 * factor + 35 * (1 - factor));
+            let b = Math.floor(255 * factor + 65 * (1 - factor));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // --- PIPELINE DE RENDU 60 FPS RESPONSIVE ---
+        function loop() {
+            runTime += 0.006;
+
+            // Rémanence vidéo fluide adaptée
+            ctx.fillStyle = 'rgba(2, 2, 6, 0.18)';
+            ctx.fillRect(0, 0, currentSize, currentSize);
+
+            // Gestion de la physique cinématique
+            if (!isDragging) {
+                currentRotX += velocityX;
+                currentRotY += velocityY;
+                velocityX *= 0.95; 
+                velocityY *= 0.95;
+
+                if (Math.abs(velocityX) < 0.001 && Math.abs(velocityY) < 0.001) {
+                    currentRotY += 0.0022;
+                    currentRotX += (0.35 + Math.sin(runTime) * 0.015 - currentRotX) * 0.05;
+                }
+            }
+
+            // Étape 1 : Transformation globale
+            const projectedPoints = [];
+            const lenVertices = vertices.length;
+            for (let i = 0; i < lenVertices; i++) {
+                let pt = rotateX(vertices[i], currentRotX);
+                pt = rotateY(pt, currentRotY);
+                let proj = project(pt);
+                let scr = toScreen(proj);
+                scr.z = proj.zCalculated;
+                projectedPoints.push(scr);
+            }
+
+            // Étape 2 : Dessin vectoriel adaptatif par segment
+            const lenEdges = edges.length;
+            
+            // Ajustement de l'épaisseur de ligne selon la taille d'affichage de l'écran
+            const baseLineWidth = (currentSize / 750) * 0.6;
+
+            for (let i = 0; i < lenEdges; i++) {
+                const pA = projectedPoints[edges[i][0]];
+                const pB = projectedPoints[edges[i][1]];
+
+                const grad = ctx.createLinearGradient(pA.x, pA.y, pB.x, pB.y);
+                grad.addColorStop(0, getZColorString(pA.z));
+                grad.addColorStop(1, getZColorString(pB.z));
+
+                ctx.beginPath();
+                ctx.strokeStyle = grad;
+                
+                const midZ = (pA.z + pB.z) / 2;
+                ctx.lineWidth = baseLineWidth + ((midZ + 0.25) / 0.5) * (baseLineWidth * 1.1);
+
+                ctx.moveTo(pA.x, pA.y);
+                ctx.lineTo(pB.x, pB.y);
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(loop);
+        }
+
+        // Lancement initial
+        resizeCanvas();
+        loop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pieuvre 3D - Version Matrice Statique</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #010105;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            cursor: move;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        canvas {
+            display: block;
+            width: 95vmin;
+            height: 95vmin;
+            max-width: 800px;
+            max-height: 800px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="renderCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('renderCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentSize = 750;
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            currentSize = Math.floor(rect.width * dpr);
+            canvas.width = currentSize;
+            canvas.height = currentSize;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // --- GÉNÉRATION ANALYTIQUE DES TENTACULES (DONNÉES FIGÉES) ---
+        // Reconstruction mathématique précise des 8 filaments à partir des équations de ton SVG
+        const pointsArray = [];
+        const numTentacles = 8;
+        const pointsPerTentacle = 450;
+
+        // Configuration géométrique des spires de la pieuvre
+        const tentacleConfigs = [
+            { scale: 0.85, rot: 0.0,  spiral: 1.8,  wave: 0.2,  hX: 0.1,  hY: 0.2 },
+            { scale: 0.90, rot: 0.8,  spiral: -1.5, wave: -0.1, hX: 0.3,  hY: -0.1 },
+            { scale: 0.75, rot: 1.7,  spiral: 2.2,  wave: 0.3,  hX: 0.2,  hY: -0.4 },
+            { scale: 0.80, rot: 2.5,  spiral: -1.9, wave: -0.2, hX: -0.2, hY: -0.3 },
+            { scale: 0.88, rot: 3.4,  spiral: 1.6,  wave: 0.1,  hX: -0.4, hY: 0.0 },
+            { scale: 0.70, rot: 4.2,  spiral: -2.4, wave: -0.4, hX: -0.3, hY: 0.3 },
+            { scale: 0.95, rot: 5.0,  spiral: 2.0,  wave: 0.2,  hX: 0.0,  hY: 0.5 },
+            { scale: 0.65, rot: 5.9,  spiral: -1.7, wave: -0.3, hX: 0.3,  hY: 0.4 }
+        ];
+
+        // Remplissage de la forme globale (Tête + Corps central + Ventouses)
+        // Génération de 12 000 particules stables imbriquées
+        for (let t = 0; t < numTentacles; t++) {
+            const config = tentacleConfigs[t];
+            
+            for (let p = 0; p < pointsPerTentacle; p++) {
+                const tProg = p / pointsPerTentacle;
+                
+                // Équation de la trajectoire incurvée en spirale logarithmique (style arabesque du SVG)
+                const angle = config.rot + (tProg * config.spiral) + Math.sin(tProg * Math.PI) * config.wave;
+                const radius = tProg * 0.75 * config.scale;
+                
+                let x = Math.cos(angle) * radius + (1 - tProg) * config.hX;
+                let y = Math.sin(angle) * radius + (1 - tProg) * config.hY;
+                
+                // recentrage global
+                x = (x * 1.1) - 0.05;
+                y = (y * 1.1) - 0.15;
+
+                // Type 0 = Cyan brillant (Ventouses / Bords), Type 1 = Magenta (Cœur volumique)
+                const type = (p % 5 === 0) ? 0 : 1;
+
+                // Épaisseur 3D (Face)
+                pointsArray.push({ x: x, y: y, z: 0.04, type: type });
+                // Épaisseur 3D (Dos)
+                pointsArray.push({ x: x, y: y, z: -0.04, type: type });
+            }
+        }
+
+        // Ajout du bulbe de la tête (Centre supérieur condensé)
+        for (let i = 0; i < 2500; i++) {
+            const r = Math.random() * 0.22;
+            const a = Math.random() * Math.PI * 2;
+            const hx = Math.cos(a) * r;
+            const hy = Math.sin(a) * r * 1.3 - 0.22; // Légèrement étiré vers le haut
+            const hz = (Math.random() - 0.5) * 0.12;
+            pointsArray.push({ x: hx, y: hy, z: hz, type: i % 4 === 0 ? 0 : 1 });
+        }
+
+        const totalParticles = pointsArray.length;
+
+        // Matrices à la volée pour l'animation cinétique
+        const pOffsetX = new Float32Array(totalParticles);
+        const pOffsetY = new Float32Array(totalParticles);
+        const pOffsetZ = new Float32Array(totalParticles);
+
+        // --- INTERACTION SOURIS / TOUCH ---
+        let currentRotX = 0.2, currentRotY = 0.3;
+        let velocityX = 0, velocityY = 0;
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+        let runTime = 0;
+
+        const startDrag = (x, y) => {
+            isDragging = true;
+            lastMouse.x = x; lastMouse.y = y;
+            velocityX = 0; velocityY = 0;
+        };
+        const moveDrag = (x, y) => {
+            if (isDragging) {
+                let diffY = (x - lastMouse.x) * 0.005;
+                let diffX = (y - lastMouse.y) * 0.005;
+                currentRotY += diffY; currentRotX += diffX;
+                velocityX = diffX; velocityY = diffY;
+                lastMouse.x = x; lastMouse.y = y;
+            }
+        };
+
+        window.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
+
+        window.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX, e.touches[0].clientY));
+        window.addEventListener('touchend', () => isDragging = false);
+        window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX, e.touches[0].clientY));
+
+        // --- PALETTE DE COULEURS NÉBULEUSE (CYAN & VIOLET) ---
+        function getNebulaColor(z, type) {
+            let factor = (z + 0.4) * 1.4;
+            factor = factor < 0 ? 0 : (factor > 1 ? 1 : factor);
+
+            if (type === 0) {
+                // Éclats extérieurs : Cyan électrique phosphorescent
+                const g = (245 * factor + 110 * (1 - factor)) | 0;
+                const b = (255 * factor + 175 * (1 - factor)) | 0;
+                return `rgb(0,${g},${b})`;
+            } else {
+                // Masse interne dense : Rose Magenta / Violet profond
+                const r = (255 * factor + 125 * (1 - factor)) | 0;
+                const g = (20 * factor + 10 * (1 - factor)) | 0;
+                const b = (235 * factor + 190 * (1 - factor)) | 0;
+                return `rgb(${r},${g},${b})`;
+            }
+        }
+
+        // --- BOUCLE DE RENDU 3D ---
+        function loop() {
+            runTime += 0.004;
+
+            // Effet d'accumulation avec traînée de lumière
+            ctx.fillStyle = 'rgba(1, 1, 5, 0.24)';
+            ctx.fillRect(0, 0, currentSize, currentSize);
+
+            if (!isDragging) {
+                currentRotX += velocityX; currentRotY += velocityY;
+                velocityX *= 0.94; velocityY *= 0.94;
+
+                // Rotation automatique lente quand on lâche l'écran
+                if (Math.abs(velocityX) < 0.0005 && Math.abs(velocityY) < 0.0005) {
+                    currentRotY += 0.002; 
+                    currentRotX += (0.2 + Math.sin(runTime) * 0.015 - currentRotX) * 0.05;
+                }
+            }
+
+            const speedSquared = velocityX * velocityX + velocityY * velocityY;
+
+            const cosY = Math.cos(currentRotY), sinY = Math.sin(currentRotY);
+            const cosX = Math.cos(currentRotX), sinX = Math.sin(currentRotX);
+            
+            const cameraZ = 2.2;
+            const halfSize = currentSize * 0.5;
+            const viewScale = currentSize * 0.9;
+            const baseDotSize = (currentSize / 750) * 0.8;
+
+            for (let i = 0; i < totalParticles; i++) {
+                const pt = pointsArray[i];
+
+                // Ondulations cinétiques lors des mouvements brusques
+                if (speedSquared > 0.00003) {
+                    const power = pt.type === 1 ? 1.8 : 0.5;
+                    pOffsetX[i] += (Math.random() - 0.5) * speedSquared * power - pOffsetX[i] * 0.05;
+                    pOffsetY[i] += (Math.random() - 0.5) * speedSquared * power - pOffsetY[i] * 0.05;
+                    pOffsetZ[i] += (Math.random() - 0.5) * speedSquared * power - pOffsetZ[i] * 0.05;
+                } else {
+                    pOffsetX[i] *= 0.85; pOffsetY[i] *= 0.85; pOffsetZ[i] *= 0.85;
+                }
+
+                const x0 = pt.x + pOffsetX[i];
+                const y0 = pt.y + pOffsetY[i];
+                const z0 = pt.z + pOffsetZ[i];
+
+                // Matrice de rotation standard
+                const rx = x0;
+                const ry = y0 * cosX - z0 * sinX;
+                const rz = y0 * sinX + z0 * cosX;
+
+                const fx = rx * cosY - rz * sinY;
+                const fy = ry;
+                const fz = rx * sinY + rz * cosY;
+
+                const zFinal = fz + cameraZ;
+                if (zFinal <= 0.1) continue;
+
+                // Projection perspective sur le Canvas
+                const screenX = (fx / zFinal) * viewScale + halfSize;
+                const screenY = (-fy / zFinal) * viewScale + halfSize;
+
+                const zScale = (fz + 0.4) * 1.4;
+                const radius = Math.max(0.4, baseDotSize * (pt.type === 0 ? 1.2 : 0.85) * (0.6 + zScale));
+
+                ctx.fillStyle = getNebulaColor(fz, pt.type);
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, radius, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(loop);
+        }
+
+        loop();
+    </script>
+</body>
+</html>

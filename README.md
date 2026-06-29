@@ -2,7 +2,7 @@
 
 Portfolio de 28 projets créatifs combinant visualisations 3D, animations interactives et outils de production.
 
-🌐 **Site en ligne :** [Voir le portfolio](https://github.com/usernamerico/portfolio-visualisations/)
+🌐 **Site en ligne :** [Voir le portfolio](https://VOTRE-USERNAME.github.io/portfolio-visualisations/)
 
 ---
 

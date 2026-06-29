@@ -82,8 +82,3 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 - **WebGL / Three.js r128** — BufferGeometry, LineSegments, additive blending
 - **CSS 3D** — preserve-3d, translateZ, mix-blend-mode: screen
 - **JavaScript pur** — Pas de framework, performances 60 FPS
-
----
-
-> ⚠️ Remplacez `usernamerico` par votre nom d'utilisateur GitHub dans tous les liens ci-dessus.  
-> Ou activez **GitHub Pages** pour une URL propre : `https://usernamerico.github.io/portfolio-visualisations/`

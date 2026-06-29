@@ -2,7 +2,7 @@
 
 Portfolio de 28 projets créatifs : visualisations 3D, animations interactives et outils de production.
 
-🌐 **Wiki de navigation :** [Ouvrir le portfolio](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/index.html)
+🌐 **Wiki de navigation :** [Ouvrir le portfolio](https://usernamerico.github.io/portfolio-visualisations/index.html)
 
 ---
 
@@ -10,13 +10,13 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `poulpe.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe.html) | Version originale — rotation souris, 4 Z-buckets, dégradé cyan→bleu |
-| `poulpe2.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe2.html) | Responsive — touch/mouse, inertie, DevicePixelRatio |
-| `poulpe3.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe3.html) | Holographique — double-pass glow, TypedArrays, 260 sections |
-| `poulpe4.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe4.html) | Matrice particules — 12 000 points, 8 tentacules analytiques |
-| `poulpe5.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe5.html) | Variante intermédiaire |
-| `poulpe6.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpe6.html) | Premium — maillage 3D, 950 sections × 12 segments |
-| `poulpeMAX.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/poulpeMAX.html) | Version MAX — dégradés HSL dynamiques, 60 FPS stable |
+| `poulpe.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe.html) | Version originale — rotation souris, 4 Z-buckets, dégradé cyan→bleu |
+| `poulpe2.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe2.html) | Responsive — touch/mouse, inertie, DevicePixelRatio |
+| `poulpe3.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe3.html) | Holographique — double-pass glow, TypedArrays, 260 sections |
+| `poulpe4.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe4.html) | Matrice particules — 12 000 points, 8 tentacules analytiques |
+| `poulpe5.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe5.html) | Variante intermédiaire |
+| `poulpe6.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpe6.html) | Premium — maillage 3D, 950 sections × 12 segments |
+| `poulpeMAX.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/poulpeMAX.html) | Version MAX — dégradés HSL dynamiques, 60 FPS stable |
 
 ---
 
@@ -24,11 +24,11 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `pieuvre_3d.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/pieuvre_3d.html) | Surface de révolution Three.js — 600 × 64 slices |
-| `pieuvre_projection.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/pieuvre_projection.html) | Projection perspective pure x'=X/Z, zoom scroll |
-| `logo_3d.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/logo_3d.html) | Logo 3D extrudé via SVGLoader |
-| `LPF.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/LPF.html) | Rendu logo 3D clipping |
-| `threejss.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/threejss.html) | Particles billboards Three.js |
+| `pieuvre_3d.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/pieuvre_3d.html) | Surface de révolution Three.js — 600 × 64 slices |
+| `pieuvre_projection.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/pieuvre_projection.html) | Projection perspective pure x'=X/Z, zoom scroll |
+| `logo_3d.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/logo_3d.html) | Logo 3D extrudé via SVGLoader |
+| `LPF.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/LPF.html) | Rendu logo 3D clipping |
+| `threejss.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/threejss.html) | Particles billboards Three.js |
 
 ---
 
@@ -36,8 +36,8 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `3D.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/3D.html) | 20 calques SVG, parallaxe souris, glow progressif |
-| `3D_responsive.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/3D_responsive.html) | Version mobile avec gyroscope (DeviceOrientationEvent) |
+| `3D.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/3D.html) | 20 calques SVG, parallaxe souris, glow progressif |
+| `3D_responsive.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/3D_responsive.html) | Version mobile avec gyroscope (DeviceOrientationEvent) |
 
 ---
 
@@ -45,10 +45,10 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `lpflogo.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/lpflogo.html) | Version 1 |
-| `lpflogo2.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/lpflogo2.html) | Version 2 — amélioration des particules |
-| `lpflogod.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/lpflogod.html) | Version définitive |
-| `lpflogo__1_.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/lpflogo__1_.html) | Variante |
+| `lpflogo.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/lpflogo.html) | Version 1 |
+| `lpflogo2.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/lpflogo2.html) | Version 2 — amélioration des particules |
+| `lpflogod.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/lpflogod.html) | Version définitive |
+| `lpflogo__1_.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/lpflogo__1_.html) | Variante |
 
 ---
 
@@ -56,12 +56,12 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `KERING-front.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/KERING-front.html) | Logo Kering en 6 000 particules, wave scan 10 sec |
-| `kering_luxe_3d.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/kering_luxe_3d.html) | Version luxe 3D |
-| `fusion_with_background__1_.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/fusion_with_background__1_.html) | Fusion avec fond HSL dynamique |
-| `fusion_copie.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/fusion_copie.html) | Variante fusion |
-| `RBG.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/RBG.html) | Animation RGB |
-| `OCTORBG.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/OCTORBG.html) | Octo RGB background |
+| `KERING-front.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/KERING-front.html) | Logo Kering en 6 000 particules, wave scan 10 sec |
+| `kering_luxe_3d.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/kering_luxe_3d.html) | Version luxe 3D |
+| `fusion_with_background__1_.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/fusion_with_background__1_.html) | Fusion avec fond HSL dynamique |
+| `fusion_copie.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/fusion_copie.html) | Variante fusion |
+| `RBG.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/RBG.html) | Animation RGB |
+| `OCTORBG.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/OCTORBG.html) | Octo RGB background |
 
 ---
 
@@ -69,10 +69,10 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 | Projet | Preview | Description |
 |---|---|---|
-| `MicroPerf-Rico.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/MicroPerf-Rico.html) | Générateur de motifs microperforation SVG |
-| `bible_materiaux_RICO.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/bible_materiaux_RICO.html) | Base de données matériaux & finitions |
-| `lpf-preflight-RICO.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/lpf-preflight-RICO.html) | Outil de preflight pour production |
-| `CHECKPDF.html` | [▶ Voir](https://htmlpreview.github.io/?https://github.com/VOTRE-USERNAME/portfolio-visualisations/blob/main/CHECKPDF.html) | Vérificateur PDF |
+| `MicroPerf-Rico.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/MicroPerf-Rico.html) | Générateur de motifs microperforation SVG |
+| `bible_materiaux_RICO.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/bible_materiaux_RICO.html) | Base de données matériaux & finitions |
+| `lpf-preflight-RICO.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/lpf-preflight-RICO.html) | Outil de preflight pour production |
+| `CHECKPDF.html` | [▶ Voir](https://usernamerico.github.io/portfolio-visualisations/CHECKPDF.html) | Vérificateur PDF |
 
 ---
 
@@ -85,5 +85,5 @@ Portfolio de 28 projets créatifs : visualisations 3D, animations interactives e
 
 ---
 
-> ⚠️ Remplacez `VOTRE-USERNAME` par votre nom d'utilisateur GitHub dans tous les liens ci-dessus.  
-> Ou activez **GitHub Pages** pour une URL propre : `https://VOTRE-USERNAME.github.io/portfolio-visualisations/`
+> ⚠️ Remplacez `usernamerico` par votre nom d'utilisateur GitHub dans tous les liens ci-dessus.  
+> Ou activez **GitHub Pages** pour une URL propre : `https://usernamerico.github.io/portfolio-visualisations/`

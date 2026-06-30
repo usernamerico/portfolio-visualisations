@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi de temps - Graphiste</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  background: #fff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.timer-section {
+  margin-bottom: 1.5rem;
+}
+
+.timer-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+#timer {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  padding: 15px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  color: #0066cc;
+  font-family: 'Courier New', monospace;
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  padding: 11px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  background: white;
+  color: #333;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+button.primary {
+  background: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+button.primary:hover {
+  background: #0052a3;
+}
+
+button.danger {
+  color: #d32f2f;
+}
+
+button.danger:hover {
+  background: #ffebee;
+}
+
+.divider {
+  border-top: 1px solid #ddd;
+  padding-top: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+#entries {
+  display: grid;
+  gap: 12px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.entry-card {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.entry-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.entry-task {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.entry-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.entry-notes {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.entry-duration {
+  text-align: right;
+  font-weight: 600;
+  font-size: 14px;
+  color: #0066cc;
+  min-width: 60px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #ddd;
+}
+
+.stat-card {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #999;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0066cc;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 {
+  font-size: 20px;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.modal-content .form-group {
+  margin-bottom: 1rem;
+}
+
+.modal-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timer-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .entry-card {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⏱️ Suivi de temps - Graphiste</h1>
+  
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="date">
+    </div>
+    <div class="form-group">
+      <label>Client</label>
+      <input type="text" id="client" placeholder="Nom du client">
+    </div>
+    <div class="form-group">
+      <label>Type de tâche</label>
+      <select id="task">
+        <option>Design graphique</option>
+        <option>Retouche photo</option>
+        <option>Création logo</option>
+        <option>Mise en page</option>
+        <option>Illustration</option>
+        <option>Motion design</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Statut</label>
+      <select id="status">
+        <option>En cours</option>
+        <option>Terminée</option>
+        <option>En pause</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="timer-section">
+    <label>Temps (HH:MM)</label>
+    <div class="timer-controls">
+      <input type="number" id="hours" placeholder="H" min="0" max="24">
+      <input type="number" id="minutes" placeholder="M" min="0" max="59">
+      <button id="startBtn" onclick="startTimer()">▶ Démarrer</button>
+      <button id="stopBtn" onclick="stopTimer()">⏹ Arrêter</button>
+    </div>
+    <div id="timer">00:00:00</div>
+  </div>
+
+  <div class="form-group">
+    <label>Notes</label>
+    <textarea id="notes" placeholder="Détails de la tâche..."></textarea>
+  </div>
+
+  <div class="button-group">
+    <button class="primary" onclick="addEntry()">+ Ajouter entrée</button>
+    <button onclick="clearAll()">Réinitialiser</button>
+  </div>
+
+  <div class="divider">
+    <h2>Entrées du jour</h2>
+    <div id="entries"></div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total du jour</div>
+      <div class="stat-value" id="totalDay">0h 0m</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Entrées</div>
+      <div class="stat-value" id="countEntries">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Exports</div>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;">
+        <button onclick="exportCSV()" style="padding: 6px 12px; font-size: 12px;">📋 CSV</button>
+        <button onclick="exportTXT()" style="padding: 6px 12px; font-size: 12px;">📝 TXT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Édition -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <h3>Éditer l'entrée</h3>
+    
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="editDate">
+    </div>
+    
+    <div class="form-group">
+      <label>Client</label>
+      <input type="text" id="editClient">
+    </div>
+    
+    <div class="form-group">
+      <label>Tâche</label>
+      <select id="editTask">
+        <option>Design graphique</option>
+        <option>Retouche photo</option>
+        <option>Création logo</option>
+        <option>Mise en page</option>
+        <option>Illustration</option>
+        <option>Motion design</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Statut</label>
+      <select id="editStatus">
+        <option>En cours</option>
+        <option>Terminée</option>
+        <option>En pause</option>
+      </select>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+      <div class="form-group">
+        <label>Heures</label>
+        <input type="number" id="editHours" placeholder="H" min="0" max="24">
+      </div>
+      <div class="form-group">
+        <label>Minutes</label>
+        <input type="number" id="editMinutes" placeholder="M" min="0" max="59">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="editNotes"></textarea>
+    </div>
+    
+    <div class="modal-buttons">
+      <button class="primary" onclick="saveEdit()">Enregistrer</button>
+      <button onclick="closeEdit()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let timerInterval = null;
+let timerSeconds = 0;
+let entries = JSON.parse(localStorage.getItem('timeEntries')) || [];
+let editingId = null;
+
+// Initialisation
+window.addEventListener('DOMContentLoaded', () => {
+  setDefaultDate();
+  render();
+});
+
+function setDefaultDate() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date').value = today;
+}
+
+function startTimer() {
+  if(timerInterval) return;
+  document.getElementById('startBtn').style.opacity = '0.5';
+  document.getElementById('stopBtn').style.opacity = '1';
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('startBtn').style.opacity = '1';
+  document.getElementById('stopBtn').style.opacity = '0.5';
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(timerSeconds / 3600);
+  const m = Math.floor((timerSeconds % 3600) / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timer').textContent = 
+    String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function addEntry() {
+  stopTimer();
+  const date = document.getElementById('date').value;
+  const client = document.getElementById('client').value || 'Sans client';
+  const task = document.getElementById('task').value;
+  const status = document.getElementById('status').value;
+  const hoursInput = document.getElementById('hours').value;
+  const minutesInput = document.getElementById('minutes').value;
+  const notes = document.getElementById('notes').value;
+  
+  if(!date) {
+    alert('Veuillez sélectionner une date');
+    return;
+  }
+  
+  let totalMinutes = 0;
+  
+  // Utiliser le minuteur si actif
+  if(timerSeconds > 0) {
+    totalMinutes = Math.floor(timerSeconds / 60);
+  } 
+  // Sinon utiliser les champs manuels
+  else {
+    const hours = hoursInput ? parseInt(hoursInput) : 0;
+    const minutes = minutesInput ? parseInt(minutesInput) : 0;
+    totalMinutes = hours * 60 + minutes;
+  }
+  
+  if(totalMinutes === 0) {
+    alert('Veuillez entrer un temps (minuteur ou champs HH:MM)');
+    return;
+  }
+  
+  entries.push({
+    id: Date.now(),
+    date, client, task, status, minutes: totalMinutes, notes
+  });
+  
+  localStorage.setItem('timeEntries', JSON.stringify(entries));
+  render();
+  reset();
+}
+
+function openEdit(id) {
+  const entry = entries.find(e => e.id === id);
+  if(!entry) return;
+  
+  editingId = id;
+  document.getElementById('editDate').value = entry.date;
+  document.getElementById('editClient').value = entry.client;
+  document.getElementById('editTask').value = entry.task;
+  document.getElementById('editStatus').value = entry.status;
+  document.getElementById('editHours').value = Math.floor(entry.minutes / 60);
+  document.getElementById('editMinutes').value = entry.minutes % 60;
+  document.getElementById('editNotes').value = entry.notes;
+  
+  document.getElementById('editModal').classList.add('active');
+}
+
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('active');
+  editingId = null;
+}
+
+function saveEdit() {
+  if(!editingId) return;
+  
+  const entry = entries.find(e => e.id === editingId);
+  if(!entry) return;
+  
+  entry.date = document.getElementById('editDate').value;
+  entry.client = document.getElementById('editClient').value || 'Sans client';
+  entry.task = document.getElementById('editTask').value;
+  entry.status = document.getElementById('editStatus').value;
+  const hours = parseInt(document.getElementById('editHours').value) || 0;
+  const mins = parseInt(document.getElementById('editMinutes').value) || 0;
+  entry.minutes = hours * 60 + mins;
+  entry.notes = document.getElementById('editNotes').value;
+  
+  localStorage.setItem('timeEntries', JSON.stringify(entries));
+  closeEdit();
+  render();
+}
+
+function deleteEntry(id) {
+  if(confirm('Supprimer cette entrée ?')) {
+    entries = entries.filter(e => e.id !== id);
+    localStorage.setItem('timeEntries', JSON.stringify(entries));
+    render();
+  }
+}
+
+function render() {
+  const entriesDiv = document.getElementById('entries');
+  const today = document.getElementById('date').value;
+  const todayEntries = entries.filter(e => e.date === today).sort((a,b) => b.id - a.id);
+  
+  if(todayEntries.length === 0) {
+    entriesDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucune entrée pour cette date</p>';
+  } else {
+    entriesDiv.innerHTML = todayEntries.map(e => `
+      <div class="entry-card">
+        <div class="entry-info">
+          <div class="entry-task">${e.task}</div>
+          <div class="entry-meta">${e.client} • ${e.status}</div>
+          ${e.notes ? `<div class="entry-notes">"${e.notes}"</div>` : ''}
+        </div>
+        <div class="entry-duration">${Math.floor(e.minutes/60)}h ${e.minutes%60}m</div>
+        <button onclick="openEdit(${e.id})" style="padding: 6px 12px; font-size: 12px;">✎ Éditer</button>
+        <button onclick="deleteEntry(${e.id})" class="danger" style="padding: 6px 12px; font-size: 12px;">✕ Suppr</button>
+      </div>
+    `).join('');
+  }
+  
+  const totalMinutes = todayEntries.reduce((sum, e) => sum + e.minutes, 0);
+  document.getElementById('totalDay').textContent = Math.floor(totalMinutes/60) + 'h ' + (totalMinutes%60) + 'm';
+  document.getElementById('countEntries').textContent = todayEntries.length;
+}
+
+function reset() {
+  document.getElementById('hours').value = '';
+  document.getElementById('minutes').value = '';
+  document.getElementById('client').value = '';
+  document.getElementById('notes').value = '';
+  document.getElementById('status').value = 'En cours';
+  document.getElementById('task').value = 'Design graphique';
+  timerSeconds = 0;
+  document.getElementById('timer').textContent = '00:00:00';
+}
+
+function clearAll() {
+  if(confirm('Supprimer toutes les entrées ? Cette action est irréversible.')) {
+    entries = [];
+    localStorage.clear();
+    render();
+  }
+}
+
+function exportCSV() {
+  const today = document.getElementById('date').value;
+  const todayEntries = entries.filter(e => e.date === today);
+  
+  if(todayEntries.length === 0) {
+    alert('Aucune entrée pour cette date');
+    return;
+  }
+  
+  let csv = 'Date,Client,Tâche,Statut,Durée (h:m),Notes\n';
+  todayEntries.forEach(e => {
+    const hours = Math.floor(e.minutes / 60);
+    const mins = e.minutes % 60;
+    const notes = e.notes.replace(/"/g, '""').replace(/\n/g, ' ');
+    csv += `${e.date},"${e.client}","${e.task}","${e.status}","${hours}:${String(mins).padStart(2,'0')}","${notes}"\n`;
+  });
+  
+  const blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `temps_${today}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function exportTXT() {
+  const today = document.getElementById('date').value;
+  const todayEntries = entries.filter(e => e.date === today);
+  
+  if(todayEntries.length === 0) {
+    alert('Aucune entrée pour cette date');
+    return;
+  }
+  
+  const totalMinutes = todayEntries.reduce((sum, e) => sum + e.minutes, 0);
+  const dateFormatted = new Date(today + 'T00:00:00').toLocaleDateString('fr-FR');
+  const nowFormatted = new Date().toLocaleDateString('fr-FR') + ' ' + new Date().toLocaleTimeString('fr-FR');
+  
+  let txt = '╔════════════════════════════════════════════════════════════════╗\n';
+  txt += '║          FEUILLE DE SUIVI DE TEMPS - GRAPHISTE                ║\n';
+  txt += '╚════════════════════════════════════════════════════════════════╝\n\n';
+  
+  txt += `Date: ${dateFormatted}\n`;
+  txt += `Total du jour: ${Math.floor(totalMinutes/60)}h ${totalMinutes%60}m\n`;
+  txt += `Nombre d'entrées: ${todayEntries.length}\n\n`;
+  
+  txt += '─────────────────────────────────────────────────────────────────\n';
+  txt += 'DÉTAIL DES TÂCHES\n';
+  txt += '─────────────────────────────────────────────────────────────────\n\n';
+  
+  todayEntries.forEach((e, index) => {
+    const hours = Math.floor(e.minutes / 60);
+    const mins = e.minutes % 60;
+    txt += `[${index + 1}] ${e.task}\n`;
+    txt += `    Client: ${e.client}\n`;
+    txt += `    Statut: ${e.status}\n`;
+    txt += `    Durée: ${hours}h ${mins}m\n`;
+    if(e.notes) txt += `    Notes: ${e.notes}\n`;
+    txt += '\n';
+  });
+  
+  txt += '─────────────────────────────────────────────────────────────────\n';
+  txt += 'RÉSUMÉ\n';
+  txt += '─────────────────────────────────────────────────────────────────\n\n';
+  txt += `TOTAL: ${Math.floor(totalMinutes/60)}h ${totalMinutes%60}m\n\n`;
+  txt += `Généré le ${nowFormatted}\n`;
+  
+  const blob = new Blob([txt], {type: 'text/plain;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `temps_${today}.txt`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Fermer modal au clic externe
+document.getElementById('editModal').addEventListener('click', (e) => {
+  if(e.target.id === 'editModal') closeEdit();
+});
+</script>
+
+</body>
+</html>

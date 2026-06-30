@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPF — Brief PAO ClickUp</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root {
+  --ink:#1a1a2e; --mid:#2d2d4e; --accent:#e85d2f; --teal:#00b4a6;
+  --warn:#f5a623; --ok:#27ae60; --ko:#e74c3c;
+  --bg:#f0f1f5; --card:#fff; --border:#e0e2e7; --muted:#6b7280; --tag:#eef0f5;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* HEADER */
+header{background:var(--ink);padding:14px 28px;display:flex;align-items:center;gap:12px;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:100}
+.logo{width:32px;height:32px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+header h1{font-size:14px;font-weight:600;color:#fff}
+header p{font-size:11px;color:#8b8fa8}
+
+/* PANELS */
+.panel{max-width:460px;margin:50px auto;background:var(--card);border-radius:12px;border:1px solid var(--border);padding:32px 36px;box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.panel h2{font-size:17px;font-weight:700;margin-bottom:5px}
+.panel .sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+label{display:block;font-size:10px;font-weight:700;color:var(--mid);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+input[type=text],input[type=password]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;font-family:'JetBrains Mono',monospace;background:#fafbfc;color:var(--ink);outline:none;transition:border-color .2s;margin-bottom:13px}
+input:focus{border-color:var(--accent);background:#fff}
+.cb-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;cursor:pointer}
+.cb-row input{width:15px;height:15px;accent-color:var(--accent)}
+.cb-row span{font-size:13px;color:var(--muted)}
+button.primary{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+button.primary:hover{background:#c44a20}
+button.primary:disabled{background:#aaa;cursor:not-allowed}
+.err{display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:7px;padding:9px 13px;font-size:13px;color:var(--ko);margin-top:10px}
+.conn-bar{display:flex;align-items:center;justify-content:space-between;background:#e8f8ef;border:1px solid #a7f3c8;border-radius:7px;padding:9px 13px;margin-bottom:18px;font-size:13px}
+.conn-bar span{color:var(--ok);font-weight:600}
+.conn-bar button{background:none;border:none;color:var(--ko);font-size:12px;cursor:pointer;font-weight:600;text-decoration:underline}
+.hint{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;text-align:center}
+.hint a{color:var(--accent);text-decoration:none}
+
+/* ── BRIEF LAYOUT ── */
+#brief{display:none;max-width:980px;margin:24px auto;padding:0 14px 60px}
+
+/* Top bar */
+.brief-top{background:var(--ink);border-radius:12px 12px 0 0;padding:22px 28px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.brief-top-left{}
+.dossier-ref{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.brief-title{font-size:19px;font-weight:700;color:#fff;line-height:1.3;max-width:620px}
+.top-meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.b-status{background:#2d2d4e;color:var(--teal);border:1px solid var(--teal)}
+.b-pao{background:#1a2a1a;color:var(--ok);border:1px solid var(--ok)}
+.b-warn{background:#2d200a;color:var(--warn);border:1px solid var(--warn)}
+.top-actions{display:flex;gap:7px;flex-shrink:0}
+.btn-sm{padding:7px 13px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.15s}
+.btn-print{background:var(--accent);color:#fff}.btn-print:hover{background:#c44a20}
+.btn-back{background:#2d2d4e;color:#aaa}.btn-back:hover{color:#fff}
+
+/* Body */
+.brief-body{background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px}
+
+/* 2-col layout */
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:0}
+.col-main{border-right:1px solid var(--border)}
+
+/* Sections */
+.sec{padding:18px 22px;border-bottom:1px solid var(--border)}
+.sec:last-child{border-bottom:none}
+.sec-title{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Elements table */
+.el-table{width:100%;border-collapse:collapse;font-size:13px}
+.el-table thead tr{background:var(--bg)}
+.el-table th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--border)}
+.el-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.4}
+.el-table tr:last-child td{border-bottom:none}
+.el-table tr:hover td{background:#fafbfc}
+.ref-tag{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--tag);padding:2px 6px;border-radius:4px;color:var(--mid);white-space:nowrap}
+.mat-chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.mat-pvc{background:#dbeafe;color:#1d4ed8}
+.mat-vinyl{background:#fce7f3;color:#be185d}
+.mat-easydot{background:#dcfce7;color:#166534}
+.mat-other{background:var(--tag);color:var(--mid)}
+.facon-tag{font-size:11px;color:var(--muted);margin-top:3px}
+.qty-big{font-size:15px;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+/* Sidebar */
+.col-side{}
+.side-block{padding:16px 18px;border-bottom:1px solid var(--border)}
+.side-block:last-child{border-bottom:none}
+.side-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+
+/* Dates */
+.date-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.date-card{background:var(--bg);border-radius:7px;padding:10px;text-align:center}
+.date-card .dl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.date-card .dv{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.date-card.overdue .dv{color:var(--ko)}
+.date-card.soon .dv{color:var(--warn)}
+.date-card.ok .dv{color:var(--ok)}
+.date-card.missing .dv{color:var(--ko);font-size:11px;font-family:'Inter',sans-serif;font-style:italic}
+
+/* Assignees */
+.person-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.person-row:last-child{margin-bottom:0}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.person-name{font-size:13px;font-weight:500}
+.person-role{font-size:11px;color:var(--muted)}
+
+/* Status pills */
+.status-row{display:flex;flex-direction:column;gap:6px}
+.status-item{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.status-item .sk{color:var(--muted)}
+.status-pill{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;background:var(--tag);color:var(--mid)}
+.sp-ok{background:#dcfce7;color:#166534}
+.sp-warn{background:#fef9c3;color:#854d0e}
+.sp-ko{background:#fee2e2;color:#991b1b}
+
+/* Brief PAO text */
+.pao-brief{font-size:13px;line-height:1.7;color:var(--ink);white-space:pre-wrap;background:var(--bg);border-radius:7px;padding:14px;max-height:260px;overflow-y:auto;border:1px solid var(--border)}
+
+/* Files */
+.file-list{display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:8px;font-size:13px;background:var(--bg);border-radius:6px;padding:7px 10px;border:1px solid var(--border)}
+.file-item .fi{font-size:16px}
+.file-item .fn{font-weight:500;flex:1}
+.file-item .ft{font-size:11px;color:var(--muted)}
+
+/* Checklist */
+.cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cl-item{display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0}
+.cl-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.cl-dot.ok{background:#dcfce7;color:var(--ok)}
+.cl-dot.ko{background:#fee2e2;color:var(--ko)}
+.cl-dot.warn{background:#fef9c3;color:var(--warn)}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{background:var(--tag);color:var(--mid);padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border)}
+
+/* Footer */
+.brief-footer{background:var(--tag);border-top:1px solid var(--border);padding:10px 22px;border-radius:0 0 12px 12px;display:flex;align-items:center;justify-content:space-between}
+.brief-footer p{font-size:11px;color:var(--muted)}
+.brief-footer a{font-size:11px;color:var(--accent);font-weight:600;text-decoration:none}
+
+/* Totaux */
+.totaux-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.total-card{background:var(--ink);border-radius:8px;padding:10px 14px;text-align:center;flex:1;min-width:80px}
+.total-card .tl{font-size:9px;color:#8b8fa8;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.total-card .tv{font-size:17px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}
+
+@media print{
+  body{background:#fff}
+  header,.top-actions,.btn-back,.btn-print,.panel{display:none!important}
+  #brief{display:block!important;margin:0;padding:0}
+  .brief-top{background:#1a1a2e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;border-radius:0}
+  .two-col{grid-template-columns:1fr}
+  .col-main{border-right:none}
+}
+@media(max-width:700px){
+  .two-col{grid-template-columns:1fr}
+  .col-main{border-right:none}
+  .date-grid{grid-template-columns:1fr 1fr}
+  .panel{margin:16px;padding:22px 18px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🐙</div>
+  <div>
+    <h1>Le Poulpe Français — Brief PAO</h1>
+    <p>Vue graphiste · ClickUp</p>
+  </div>
+</header>
+
+<!-- PANEL 1 : API KEY -->
+<div class="panel" id="panel-api">
+  <h2>🔑 Connexion ClickUp</h2>
+  <p class="sub">Ta clé est mémorisée dans ce navigateur — une seule fois.</p>
+  <label>Clé API personnelle</label>
+  <input type="password" id="api-key-input" placeholder="pk_XXXXXXXXXXXXXXXXXXXXXXXX" autocomplete="off">
+  <label class="cb-row"><input type="checkbox" id="remember-key" checked><span>Mémoriser sur cet appareil</span></label>
+  <button class="primary" onclick="saveApiKey()">Valider →</button>
+  <div class="err" id="err-api"></div>
+  <p class="hint"><a href="https://app.clickup.com/settings/apps" target="_blank">Où trouver ma clé API ↗</a></p>
+</div>
+
+<!-- PANEL 2 : SEARCH -->
+<div class="panel" id="panel-task" style="display:none">
+  <h2>📋 Charger une tâche</h2>
+  <div class="conn-bar"><span>✓ Clé API connectée</span><button onclick="disconnectKey()">Changer de clé</button></div>
+  <label>Numéro de dossier LPF ou ID ClickUp</label>
+  <input type="text" id="task-input" placeholder="LPF-47267 ou 86axxxxxxxxx">
+  <button class="primary" id="load-btn" onclick="loadTask()">Générer le brief ↗</button>
+  <div class="err" id="err-task"></div>
+  <p class="hint">Accepte : <code>LPF-47267</code> · <code>47267</code> · ID ClickUp complet</p>
+</div>
+
+<!-- BRIEF -->
+<div id="brief">
+
+  <div class="brief-top">
+    <div class="brief-top-left">
+      <div class="dossier-ref" id="out-ref">—</div>
+      <div class="brief-title" id="out-name">—</div>
+      <div class="top-meta">
+        <span class="badge b-status" id="out-status">—</span>
+        <span class="badge" id="out-pao-status">—</span>
+        <span class="badge" id="out-priority">—</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-sm btn-print" onclick="window.print()">🖨 Imprimer</button>
+      <button class="btn-sm btn-back" onclick="backToTask()">← Retour</button>
+    </div>
+  </div>
+
+  <div class="brief-body">
+    <div class="two-col">
+
+      <!-- COL MAIN -->
+      <div class="col-main">
+
+        <!-- ÉLÉMENTS À PRODUIRE -->
+        <div class="sec">
+          <div class="sec-title">📐 Éléments à produire</div>
+          <div class="totaux-row" id="out-totaux"></div>
+          <table class="el-table">
+            <thead>
+              <tr>
+                <th>Réf.</th>
+                <th>Format (mm)</th>
+                <th>Matière</th>
+                <th>Qté</th>
+                <th>Façonnage / Notes</th>
+              </tr>
+            </thead>
+            <tbody id="out-elements"></tbody>
+          </table>
+        </div>
+
+        <!-- BRIEF PAO -->
+        <div class="sec" id="sec-pao-brief" style="display:none">
+          <div class="sec-title">📝 Brief PAO</div>
+          <div class="pao-brief" id="out-pao-brief"></div>
+        </div>
+
+        <!-- FICHIERS FOURNIS -->
+        <div class="sec" id="sec-files" style="display:none">
+          <div class="sec-title">📎 Fichiers fournis / PJ mentionnées</div>
+          <div class="file-list" id="out-files"></div>
+        </div>
+
+        <!-- CHECKLIST PREFLIGHT -->
+        <div class="sec">
+          <div class="sec-title">✅ Préflight PAO</div>
+          <div class="cl-grid" id="out-checklist"></div>
+        </div>
+
+      </div><!-- /col-main -->
+
+      <!-- COL SIDEBAR -->
+      <div class="col-side">
+
+        <!-- DATES CLÉS -->
+        <div class="side-block">
+          <div class="side-label">📅 Dates clés</div>
+          <div class="date-grid" id="out-dates"></div>
+        </div>
+
+        <!-- GRAPHISTE & ÉQUIPE -->
+        <div class="side-block">
+          <div class="side-label">👤 Graphiste & équipe</div>
+          <div id="out-people"></div>
+        </div>
+
+        <!-- STATUTS -->
+        <div class="side-block">
+          <div class="side-label">📊 Statuts dossier</div>
+          <div class="status-row" id="out-statuts"></div>
+        </div>
+
+        <!-- TAGS -->
+        <div class="side-block" id="sec-tags" style="display:none">
+          <div class="side-label">🏷 Tags</div>
+          <div class="tags" id="out-tags"></div>
+        </div>
+
+      </div><!-- /col-side -->
+
+    </div><!-- /two-col -->
+
+    <div class="brief-footer">
+      <p>Généré le <span id="out-date-gen"></span> · <span id="out-id-footer"></span></p>
+      <a id="out-link" href="#" target="_blank">Ouvrir dans ClickUp ↗</a>
+    </div>
+
+  </div><!-- /brief-body -->
+</div><!-- /brief -->
+
+<script>
+const STORAGE_KEY = 'lpf_cu_key';
+const SPACE_KEY   = 'lpf_cu_space';
+const AV_COLORS   = ['#e85d2f','#00b4a6','#6c5ce7','#e17055','#0984e3','#27ae60','#d63031','#fd79a8'];
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem(STORAGE_KEY)) showTaskPanel();
+  ['task-input'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => { if(e.key==='Enter') loadTask(); });
+  });
+  document.getElementById('api-key-input')?.addEventListener('keydown', e => { if(e.key==='Enter') saveApiKey(); });
+});
+
+function showTaskPanel() {
+  document.getElementById('panel-api').style.display  = 'none';
+  document.getElementById('panel-task').style.display = 'block';
+  document.getElementById('brief').style.display      = 'none';
+  setTimeout(() => document.getElementById('task-input')?.focus(), 60);
+}
+function saveApiKey() {
+  const k = document.getElementById('api-key-input').value.trim();
+  if (!k) { showErr('err-api','Saisis ta clé API.'); return; }
+  if (document.getElementById('remember-key').checked) localStorage.setItem(STORAGE_KEY, k);
+  showTaskPanel();
+}
+function disconnectKey() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('panel-task').style.display = 'none';
+  document.getElementById('panel-api').style.display  = 'block';
+  document.getElementById('brief').style.display      = 'none';
+}
+function backToTask() {
+  document.getElementById('brief').style.display      = 'none';
+  document.getElementById('panel-task').style.display = 'block';
+  document.getElementById('task-input').value = '';
+  setTimeout(() => document.getElementById('task-input').focus(), 60);
+}
+function showErr(id, msg) { const e=document.getElementById(id); e.textContent=msg; e.style.display='block'; }
+function hideErr(id) { document.getElementById(id).style.display='none'; }
+function apiKey() { return localStorage.getItem(STORAGE_KEY) || ''; }
+
+// ── SEARCH / LOAD ──
+async function loadTask() {
+  const raw = document.getElementById('task-input').value.trim();
+  hideErr('err-task');
+  if (!raw) { showErr('err-task','Saisis un numéro de dossier ou un ID ClickUp.'); return; }
+
+  const btn = document.getElementById('load-btn');
+  btn.disabled = true; btn.textContent = 'Recherche…';
+
+  try {
+    let task = null;
+
+    // Detect format
+    const isLPF   = /LPF-\d+/i.test(raw);
+    const isShort = /^\d{3,8}$/.test(raw);       // ex: 47267
+    const isFull  = /^[a-z0-9]{8,}$/i.test(raw) && !isShort; // ex: 86c8c5kte
+
+    if (isFull) {
+      // Direct fetch by ClickUp task ID
+      task = await fetchTask(raw);
+    } else {
+      // Search by custom field "Identifiant de dossier" or name
+      const searchStr = isLPF ? raw.toUpperCase() : 'LPF-' + raw;
+      task = await searchByDossier(searchStr);
+      if (!task) throw new Error(`Dossier "${searchStr}" introuvable. Vérifie le numéro ou utilise l'ID ClickUp complet.`);
+    }
+
+    renderBrief(task);
+  } catch(e) {
+    showErr('err-task', e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Générer le brief ↗';
+  }
+}
+
+async function fetchTask(id) {
+  const res = await fetch(`https://api.clickup.com/api/v2/task/${encodeURIComponent(id)}`, {
+    headers: { 'Authorization': apiKey() }
+  });
+  if (!res.ok) { const b = await res.json().catch(()=>({})); throw new Error(b.err || `HTTP ${res.status}`); }
+  return res.json();
+}
+
+async function searchByDossier(dossierRef) {
+  // Use ClickUp search endpoint across accessible teams
+  // First get team id
+  const teamsRes = await fetch('https://api.clickup.com/api/v2/team', { headers:{'Authorization':apiKey()} });
+  if (!teamsRes.ok) throw new Error('Impossible de récupérer les équipes ClickUp.');
+  const teams = await teamsRes.json();
+  const teamId = teams.teams?.[0]?.id;
+  if (!teamId) throw new Error('Aucune équipe ClickUp trouvée.');
+
+  // Search tasks
+  const searchRes = await fetch(
+    `https://api.clickup.com/api/v2/team/${teamId}/task?` +
+    new URLSearchParams({ query: dossierRef, include_closed: 'true' }),
+    { headers:{'Authorization':apiKey()} }
+  );
+  if (!searchRes.ok) throw new Error('Recherche ClickUp échouée.');
+  const data = await searchRes.json();
+  const tasks = data.tasks || [];
+
+  // Match by custom field "Identifiant de dossier" or task name
+  const match = tasks.find(t => {
+    const nameMatch = (t.name||'').toUpperCase().includes(dossierRef.replace('LPF-',''));
+    const cfMatch = (t.custom_fields||[]).some(f =>
+      f.name?.toLowerCase().includes('identifiant') &&
+      String(f.value||'').toUpperCase().includes(dossierRef.replace('LPF-',''))
+    );
+    return nameMatch || cfMatch;
+  });
+  return match || null;
+}
+
+// ── HELPERS ──
+function fmtDate(ms) {
+  if (!ms) return null;
+  const n = Number(ms);
+  if (n < 1e10) return null; // sanity check — timestamps in ms should be > 1e12
+  return new Date(n).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+}
+function fmtDateShort(ms) {
+  if (!ms) return null;
+  const n = Number(ms);
+  if (n < 1e10) return null;
+  return new Date(n).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+}
+function isOverdue(ms) { return ms && Number(ms) > 1e10 && Number(ms) < Date.now(); }
+function isSoon(ms) { return ms && Number(ms) > 1e10 && Number(ms)-Date.now() < 4*86400*1000 && !isOverdue(ms); }
+function avatarColor(i){ return AV_COLORS[i%AV_COLORS.length]; }
+function initials(n){ return (n||'?').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase(); }
+
+function getCF(fields, names) {
+  if (!fields) return null;
+  for (const f of fields) {
+    const fn = (f.name||'').toLowerCase();
+    if (names.some(n=>fn.includes(n))) {
+      let v = f.value ?? null;
+      if (v===null||v==='') return null;
+      if (f.type==='drop_down'&&f.type_config?.options) {
+        const opt=f.type_config.options.find(o=>String(o.orderindex)===String(v)||o.id===v);
+        if (opt) v=opt.name;
+      }
+      return String(v);
+    }
+  }
+  return null;
+}
+
+// ── PARSE ELEMENTS ──
+// Parse the "Brief PAO" custom field to extract structured elements
+function parseElements(briefText) {
+  if (!briefText) return [];
+  const elements = [];
+
+  // Pattern: "Formats : WxHmm | N modèle(s) en X exemplaires : REF"
+  // Or: "Ref\nMat\nFormat : W x H mm\nQté : N"
+  // Multiple patterns used in LPF briefs
+
+  // Pattern A: "Format : WxH mm\nQté : N"
+  const blockRegex = /Réf[\. :]+([^\n]+)\n([^\n]*)\n(?:Format\s*:\s*([^\n]+)\n)?(?:Qté\s*:\s*([^\n]+)\n?)?(?:Façonnage\s*:\s*([^\n]+))?/gi;
+  let m;
+  while ((m = blockRegex.exec(briefText)) !== null) {
+    elements.push({
+      ref: m[1]?.trim(),
+      mat: m[2]?.trim(),
+      format: m[3]?.trim(),
+      qty: m[4]?.trim(),
+      facon: m[5]?.trim()
+    });
+  }
+
+  // Pattern B: "WxHmm | N modèle en X exemplaires : REF" (compact table style)
+  const lineRegex = /(\d[\d,\.]*\s*[xX×]\s*\d[\d,\.]*\s*mm)\s*\|\s*(\d+)\s*modèle.*?en\s*(\d+)\s*exemplaires?\s*(?::\s*([^\n]+))?/gi;
+  while ((m = lineRegex.exec(briefText)) !== null) {
+    if (!elements.find(e => e.ref && m[4] && e.ref.includes(m[4]?.split(' ')[0]))) {
+      elements.push({
+        ref: m[4]?.trim() || '—',
+        mat: null,
+        format: m[1]?.replace(/\s/g,''),
+        qty: m[3],
+        facon: null
+      });
+    }
+  }
+
+  return elements;
+}
+
+// Parse the raw description for structured product lines
+function parseDescription(desc) {
+  if (!desc) return [];
+  const elements = [];
+  // Split by double newline or reference patterns
+  const blocks = desc.split(/\n\n+/);
+  for (const block of blocks) {
+    const lines = block.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+    if (lines.length < 2) continue;
+    const ref = lines[0];
+    // Skip if block looks like a paragraph (too long first line)
+    if (ref.length > 60 || !ref.match(/[A-Z]{2,}-\d{4}/)) continue;
+    const el = { ref, mat:null, format:null, qty:null, facon:[] };
+    for (let i=1;i<lines.length;i++) {
+      const l = lines[i];
+      if (/format/i.test(l)) el.format = l.replace(/format\s*:\s*/i,'').trim();
+      else if (/qté|quantité/i.test(l)) el.qty = l.replace(/qté\s*:\s*|quantité\s*:\s*/i,'').trim();
+      else if (/velcro|perfo|anneau|découpe|coupe|df au dos|façonnage/i.test(l)) el.facon.push(l.replace(/façonnage\s*:\s*/i,'').trim());
+      else if (/pvc|vinyle|easydot|easy dot|papier|dibond|forex|bâche/i.test(l)) el.mat = l.trim();
+    }
+    if (el.format || el.qty) {
+      el.facon = el.facon.join(' · ') || null;
+      elements.push(el);
+    }
+  }
+  return elements;
+}
+
+// Detect material chip class
+function matClass(mat) {
+  if (!mat) return 'mat-other';
+  const m = mat.toLowerCase();
+  if (m.includes('pvc')) return 'mat-pvc';
+  if (m.includes('vinyl')) return 'mat-vinyl';
+  if (m.includes('easydot')||m.includes('easy dot')) return 'mat-easydot';
+  return 'mat-other';
+}
+function matLabel(mat) {
+  if (!mat) return '—';
+  if (mat.length > 20) return mat.substring(0,18)+'…';
+  return mat;
+}
+
+// Extract mentioned files from text
+function extractFiles(text) {
+  if (!text) return [];
+  const files = [];
+  // PDF / fichier / visuel / brief patterns
+  const patterns = [
+    /["«»""]([^"«»""]{4,60}\.(pdf|ai|eps|svg|indd|jpg|png|xlsx|docx))["«»""]/gi,
+    /fichier[s]?\s+([^\n,;]{4,60})/gi,
+    /en PJ[^:]*:\s*([^\n]+)/gi,
+    /\bBRIEF\s+[A-Z][^\n]{3,50}/g,
+    /Réf\.\s*(CUI|SDB|LPF)-\d+[A-Z]*/g,
+  ];
+  for (const rx of patterns) {
+    let m;
+    while ((m=rx.exec(text))!==null) {
+      const f = (m[1]||m[0]).trim();
+      if (f.length>3 && f.length<80 && !files.includes(f)) files.push(f);
+    }
+  }
+  return files.slice(0,12);
+}
+
+function fileIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes('brief')) return '📋';
+  if (n.match(/\.(pdf)/)) return '📄';
+  if (n.match(/\.(ai|eps|svg|indd)/)) return '🎨';
+  if (n.match(/\.(jpg|jpeg|png)/)) return '🖼';
+  if (n.match(/\.(xlsx|csv)/)) return '📊';
+  if (n.match(/\.(docx|doc)/)) return '📝';
+  if (n.match(/réf\.|sdb|cui|lpf/i)) return '🏷';
+  return '📎';
+}
+
+// Status pill class
+function spClass(val) {
+  if (!val) return 'status-pill';
+  const v = val.toLowerCase();
+  if (v.includes('cours')||v.includes('progress')||v.includes('pao')) return 'status-pill sp-warn';
+  if (v.includes('validé')||v.includes('rendu')||v.includes('expéd')||v.includes('terminé')) return 'status-pill sp-ok';
+  if (v.includes('attente')||v.includes('bloqué')) return 'status-pill sp-ko';
+  return 'status-pill';
+}
+
+// ── RENDER ──
+function renderBrief(task) {
+  const cf = task.custom_fields || [];
+  const desc = (task.description || '').trim();
+
+  // Ref & title
+  const dossierId = getCF(cf,['identifiant de dossier','identifiant']) || ('ClickUp #'+task.id);
+  document.getElementById('out-ref').textContent  = dossierId;
+  document.getElementById('out-name').textContent = task.name || '(sans titre)';
+  document.getElementById('out-id-footer').textContent = dossierId;
+  document.getElementById('out-date-gen').textContent  = new Date().toLocaleDateString('fr-FR');
+  document.getElementById('out-link').href = task.url || ('https://app.clickup.com/t/'+task.id);
+
+  // Status badges
+  document.getElementById('out-status').textContent = (task.status?.status||'—').toUpperCase();
+  const paoSt = getCF(cf,['statut pao','statut_pao']);
+  const paoEl = document.getElementById('out-pao-status');
+  if (paoSt) { paoEl.textContent='🎨 '+paoSt; paoEl.className='badge b-pao'; }
+  else paoEl.style.display='none';
+  const prio = task.priority?.priority;
+  const prioMap={1:{l:'🔴 URGENT',c:'b-warn'},2:{l:'🟠 Haute',c:'b-warn'},3:{l:'🟢 Normale',c:'b-status'},4:{l:'⚪ Basse',c:'b-status'}};
+  const pb = prioMap[prio]||{l:'—',c:'b-status'};
+  const prioEl = document.getElementById('out-priority');
+  prioEl.textContent=pb.l; prioEl.className='badge '+pb.c;
+
+  // ── DATES ──
+  const dateFields = [
+    { label:'Lancement PAO', cf:['date lancement pao','lancement pao'] },
+    { label:'Rendu BAT',     cf:['date rendu pao','rendu pao','rendu bat'] },
+    { label:'Fin de prod',   cf:['date fin prod','fin prod'] },
+    { label:'Due date',      val: task.due_date },
+  ];
+  const datesEl = document.getElementById('out-dates');
+  datesEl.innerHTML = '';
+  for (const df of dateFields) {
+    const ms = df.val || getCF(cf, df.cf);
+    const d  = fmtDateShort(ms);
+    const card = document.createElement('div');
+    card.className = 'date-card' + (isOverdue(ms)?' overdue':isSoon(ms)?' soon':ms&&d?' ok':'');
+    card.innerHTML = `<div class="dl">${df.label}</div><div class="dv">${d||'—'}</div>`;
+    datesEl.appendChild(card);
+  }
+
+  // ── PEOPLE ──
+  const graphiste = getCF(cf,['graphiste pao','graphiste']);
+  const peopleEl  = document.getElementById('out-people');
+  peopleEl.innerHTML='';
+  // Graphiste from custom field first
+  if (graphiste) {
+    const row = document.createElement('div'); row.className='person-row';
+    const av=document.createElement('div'); av.className='avatar'; av.style.background=avatarColor(0); av.textContent=initials(graphiste);
+    const info=document.createElement('div');
+    info.innerHTML=`<div class="person-name">${graphiste}</div><div class="person-role">Graphiste PAO</div>`;
+    row.append(av,info); peopleEl.appendChild(row);
+  }
+  (task.assignees||[]).forEach((a,i)=>{
+    if (graphiste && (a.username||'').toLowerCase().includes(graphiste.toLowerCase())) return;
+    const row=document.createElement('div'); row.className='person-row';
+    const av=document.createElement('div'); av.className='avatar'; av.style.background=avatarColor(i+1); av.textContent=initials(a.username||a.email);
+    const info=document.createElement('div');
+    info.innerHTML=`<div class="person-name">${a.username||a.email||'—'}</div><div class="person-role">Assigné</div>`;
+    row.append(av,info); peopleEl.appendChild(row);
+  });
+  if (!graphiste && !task.assignees?.length) peopleEl.innerHTML='<span style="color:var(--ko);font-size:13px">⚠ Non assigné</span>';
+
+  // ── STATUTS ──
+  const statutFields = [
+    { label:'Commercial',      cf:['statut commercial'] },
+    { label:'Production',      cf:['statut production','statut prod'] },
+    { label:'Sous-traitance',  cf:['statut sous-traitance','statut st'] },
+    { label:'Livraison',       cf:['statut livraison'] },
+  ];
+  const statutEl = document.getElementById('out-statuts');
+  statutEl.innerHTML='';
+  for (const sf of statutFields) {
+    const v = getCF(cf, sf.cf);
+    if (!v) continue;
+    const row=document.createElement('div'); row.className='status-item';
+    row.innerHTML=`<span class="sk">${sf.label}</span><span class="${spClass(v)}">${v}</span>`;
+    statutEl.appendChild(row);
+  }
+
+  // ── BRIEF PAO TEXT ──
+  const paoBriefText = getCF(cf,['brief pao']);
+  if (paoBriefText) {
+    document.getElementById('out-pao-brief').textContent = paoBriefText;
+    document.getElementById('sec-pao-brief').style.display = '';
+  }
+
+  // ── ÉLÉMENTS À PRODUIRE ──
+  // Try parsing from desc first (most structured), then from brief PAO field
+  let elements = parseDescription(desc);
+  if (!elements.length && paoBriefText) elements = parseElements(paoBriefText);
+
+  const tbody = document.getElementById('out-elements');
+  tbody.innerHTML = '';
+  let totalQty = 0; let totalRefs = elements.length;
+
+  if (elements.length) {
+    elements.forEach(el => {
+      const qty = parseInt((el.qty||'0').replace(/\D/g,''))||0;
+      totalQty += qty;
+      const tr = document.createElement('tr');
+      const mc  = matClass(el.mat);
+      tr.innerHTML = `
+        <td><span class="ref-tag">${el.ref||'—'}</span></td>
+        <td><strong>${el.format||'—'}</strong></td>
+        <td>${el.mat ? `<span class="mat-chip ${mc}">${matLabel(el.mat)}</span>` : '—'}</td>
+        <td><span class="qty-big">${el.qty||'—'}</span></td>
+        <td><span class="facon-tag">${el.facon||'—'}</span></td>`;
+      tbody.appendChild(tr);
+    });
+  } else {
+    // Fallback: show raw description in a readable way
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td colspan="5" style="font-size:13px;line-height:1.7;white-space:pre-wrap;padding:14px">${desc||'(aucune description)'}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  // Totaux
+  const totEl = document.getElementById('out-totaux');
+  totEl.innerHTML='';
+  const totals = [
+    {l:'Références',tv:totalRefs||'—'},
+    {l:'Total pièces',tv:totalQty||'—'},
+  ];
+  // Add material counts
+  const matGroups = {};
+  elements.forEach(el => {
+    if (!el.mat) return;
+    const k = el.mat.split(' ')[0]; // first word
+    matGroups[k] = (matGroups[k]||0) + (parseInt((el.qty||'0').replace(/\D/g,''))||0);
+  });
+  for (const [k,v] of Object.entries(matGroups)) {
+    totals.push({l:k,tv:v});
+  }
+  totals.forEach(t => {
+    const c=document.createElement('div'); c.className='total-card';
+    c.innerHTML=`<div class="tl">${t.l}</div><div class="tv">${t.tv}</div>`;
+    totEl.appendChild(c);
+  });
+
+  // ── FICHIERS ──
+  const allText = desc + ' ' + (paoBriefText||'');
+  const files = extractFiles(allText);
+  if (files.length) {
+    const filesEl = document.getElementById('out-files');
+    filesEl.innerHTML='';
+    files.forEach(f => {
+      const item=document.createElement('div'); item.className='file-item';
+      item.innerHTML=`<span class="fi">${fileIcon(f)}</span><span class="fn">${f}</span>`;
+      filesEl.appendChild(item);
+    });
+    document.getElementById('sec-files').style.display='';
+  }
+
+  // ── CHECKLIST ──
+  const combined = (desc+' '+(paoBriefText||'')+(task.name||'')).toLowerCase();
+  const has=(...kws)=>kws.some(k=>combined.includes(k));
+  const checks=[
+    {l:'Dimensions (L×H mm)', ok:has('mm','format','dimensions')},
+    {l:'Quantité',            ok:has('qté','quantité','exemplaire','unité')},
+    {l:'Matière / support',   ok:has('pvc','vinyle','easydot','dibond','bâche','adhésif')},
+    {l:'Fond perdu',          ok:has('fond perdu','bleed'), warn:!has('fond perdu','bleed')},
+    {l:'Profil couleur',      ok:has('cmjn','cmyk','srgb','quadri'), warn:!has('cmjn','cmyk')},
+    {l:'Façonnage défini',    ok:has('velcro','perfo','anneau','coupe','df au dos','découpe')},
+    {l:'Blanc de soutien',    ok:has('blanc')||!has('vitrophanie'), warn:has('vitrophanie')&&!has('blanc soutien')},
+    {l:'Date rendu BAT',      ok:!!getCF(cf,['rendu pao','rendu bat'])},
+    {l:'Date fin de prod',    ok:!!getCF(cf,['fin prod','date fin'])},
+    {l:'Graphiste assigné',   ok:!!graphiste||(task.assignees?.length>0)},
+    {l:'Fichiers fournis',    ok:has('pj','en pj','joint','ci-joint','fichier')},
+    {l:'Brief PAO reçu',      ok:!!paoBriefText},
+  ];
+  const clEl = document.getElementById('out-checklist');
+  clEl.innerHTML='';
+  checks.forEach(item=>{
+    const li=document.createElement('div'); li.className='cl-item';
+    const dot=document.createElement('span');
+    dot.className='cl-dot '+(item.ok?'ok':item.warn?'warn':'ko');
+    dot.textContent=item.ok?'✓':item.warn?'?':'✕';
+    const txt=document.createElement('span'); txt.textContent=item.l;
+    if(!item.ok&&!item.warn) txt.style.color='var(--ko)';
+    if(item.warn) txt.style.color='var(--warn)';
+    li.append(dot,txt); clEl.appendChild(li);
+  });
+
+  // ── TAGS ──
+  if (task.tags?.length) {
+    const tagsEl=document.getElementById('out-tags'); tagsEl.innerHTML='';
+    task.tags.forEach(t=>{
+      const s=document.createElement('span'); s.className='tag'; s.textContent=t.name;
+      tagsEl.appendChild(s);
+    });
+    document.getElementById('sec-tags').style.display='';
+  }
+
+  // Show
+  document.getElementById('panel-task').style.display = 'none';
+  document.getElementById('brief').style.display      = 'block';
+}
+</script>
+</body>
+</html>
